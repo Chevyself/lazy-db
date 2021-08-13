@@ -1,0 +1,4 @@
+# Project exclude paths
+/core/target/
+/jsongo/target/
+/sql/target/
