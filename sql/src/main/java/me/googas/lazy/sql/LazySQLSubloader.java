@@ -35,6 +35,7 @@ public abstract class LazySQLSubloader {
    * @throws SQLException in case the sql cannot be prepared
    */
   @NonNull
+  @Deprecated
   public PreparedStatement statementOf(@NonNull String sql) throws SQLException {
     return this.parent.getConnection().prepareStatement(sql);
   }
@@ -48,6 +49,7 @@ public abstract class LazySQLSubloader {
    * @throws SQLException in case the sql cannot be prepared
    */
   @NonNull
+  @Deprecated
   public PreparedStatement statementOf(@NonNull String sql, int statement) throws SQLException {
     return this.parent.getConnection().prepareStatement(sql, statement);
   }
@@ -63,6 +65,7 @@ public abstract class LazySQLSubloader {
    * @throws SQLException in case the sql cannot be prepared
    */
   @NonNull
+  @Deprecated
   public PreparedStatement statementOf(@NonNull String sql, int statement, Object... objects)
       throws SQLException {
     return this.parent.getConnection().prepareStatement(Strings.format(sql, objects), statement);
@@ -78,8 +81,56 @@ public abstract class LazySQLSubloader {
    * @throws SQLException in case the sql cannot be prepared
    */
   @NonNull
+  @Deprecated
   public PreparedStatement formatStatement(@NonNull String sql, Object... objects)
       throws SQLException {
     return this.parent.getConnection().prepareStatement(Strings.format(sql, objects));
+  }
+
+  /**
+   * Start a statement and provide the sql from {@link LazySchema.SchemaSupplier#getSql(String)}.
+   *
+   * @param key the key to get the sql
+   * @param statement the type of {@link java.sql.Statement}
+   * @return a new statement
+   */
+  @NonNull
+  protected LazyStatement statementWithKey(@NonNull String key, int statement) {
+    return LazyStatement.start(
+        this.parent, this.parent.getSchema().getProvider().getSql(key), statement);
+  }
+
+  /**
+   * Start a statement and provide the sql from {@link LazySchema.SchemaSupplier#getSql(String)}.
+   *
+   * @param key the key to get the sql
+   * @return a new statement
+   */
+  @NonNull
+  protected LazyStatement statementWithKey(@NonNull String key) {
+    return LazyStatement.start(this.parent, this.parent.getSchema().getProvider().getSql(key));
+  }
+
+  /**
+   * Start a statement.
+   *
+   * @param sql the sql statement
+   * @param statement the type of {@link java.sql.Statement}
+   * @return a new statement
+   */
+  @NonNull
+  protected LazyStatement statement(@NonNull String sql, int statement) {
+    return LazyStatement.start(this.parent, sql, statement);
+  }
+
+  /**
+   * Start a statement.
+   *
+   * @param sql the sql statement
+   * @return a new statement
+   */
+  @NonNull
+  protected LazyStatement statement(@NonNull String sql) {
+    return LazyStatement.start(this.parent, sql);
   }
 }
