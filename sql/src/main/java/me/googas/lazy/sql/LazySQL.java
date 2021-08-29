@@ -126,7 +126,9 @@ public class LazySQL implements Loader {
   @NonNull
   public LazySQL start() throws SQLException {
     for (int i = 0; i < base; i++) {
-      this.open.add(this.supplier.supply());
+      Connection connection = this.supplier.supply();
+      connection.setAutoCommit(true);
+      this.open.add(connection);
     }
     for (LazySQLSubloader subloader : this.subloaders) {
       try {
@@ -180,6 +182,7 @@ public class LazySQL implements Loader {
     Connection connection;
     if (this.open.isEmpty() && this.used.size() < this.max) {
       connection = this.supplier.supply();
+      connection.setAutoCommit(true);
       this.used.add(connection);
     } else if (!this.open.isEmpty()) {
       connection = this.open.get(0);
