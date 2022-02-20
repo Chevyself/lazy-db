@@ -77,20 +77,20 @@
         <dependency>
             <groupId>me.googas.starbox</groupId>
             <artifactId>core</artifactId>
-            <version>5c6a6008f6</version>
+            <version>4bd3e76f17</version>
         </dependency>
         <!-- Dependency to Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.16</version>
+            <version>1.18.22</version>
             <scope>compile</scope>
         </dependency>
         <!-- Junit tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.7.2</version>
+            <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

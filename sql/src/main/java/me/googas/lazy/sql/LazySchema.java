@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NonNull;
 
 /**
- * Provides an schema when a program uses different types of SQL. This attempts to solve the problem
+ * Provides a schema when a program uses different types of SQL. This attempts to solve the problem
  * when databases may have differences
  */
 public class LazySchema {
