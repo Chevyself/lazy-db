@@ -16,9 +16,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.googas.lazy.Loader;
 import me.googas.lazy.Subloader;
-import me.googas.net.cache.Cache;
-import me.googas.net.cache.MemoryCache;
-import me.googas.starbox.builders.Builder;
+import me.googas.lazy.builders.Builder;
+import me.googas.lazy.cache.Cache;
+import me.googas.lazy.cache.MemoryCache;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 

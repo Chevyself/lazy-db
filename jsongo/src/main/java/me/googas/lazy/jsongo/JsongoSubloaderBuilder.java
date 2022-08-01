@@ -1,6 +1,6 @@
 package me.googas.lazy.jsongo;
 
-import me.googas.starbox.builders.SuppliedBuilder;
+import me.googas.lazy.builders.SuppliedBuilder;
 
 /**
  * Represents a builder for {@link JsongoSubloader}. This is used to centralize an initialize for

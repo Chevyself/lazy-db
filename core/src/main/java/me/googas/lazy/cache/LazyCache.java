@@ -10,8 +10,7 @@ import lombok.experimental.Delegate;
 import me.googas.lazy.LazyEmpty;
 import me.googas.lazy.Loader;
 import me.googas.lazy.Subloader;
-import me.googas.net.cache.Cache;
-import me.googas.starbox.builders.Builder;
+import me.googas.lazy.builders.Builder;
 
 /**
  * A loader that finds elements inside {@link Cache}. If no elements are found the {@link #child}

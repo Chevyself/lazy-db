@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.lazy.Subloader;
-import me.googas.net.cache.Catchable;
+import me.googas.lazy.cache.Catchable;
 import org.bson.Document;
 
 /** Manages objects using a {@link MongoCollection}. Children of the loader {@link Jsongo} */

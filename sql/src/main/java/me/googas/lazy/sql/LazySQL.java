@@ -1,5 +1,6 @@
 package me.googas.lazy.sql;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,12 +11,11 @@ import java.util.List;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.io.StarboxFile;
 import me.googas.lazy.Loader;
 import me.googas.lazy.Subloader;
-import me.googas.net.cache.Cache;
-import me.googas.net.cache.MemoryCache;
-import me.googas.starbox.builders.Builder;
+import me.googas.lazy.builders.Builder;
+import me.googas.lazy.cache.Cache;
+import me.googas.lazy.cache.MemoryCache;
 
 /**
  * LazySQL is a loader that uses a SQL driver. This provides {@link LazySQLSubloader} which are
@@ -69,7 +69,7 @@ public class LazySQL implements Loader {
    * @return a new builder
    */
   @NonNull
-  public static LazySQLBuilder at(@NonNull StarboxFile file, @NonNull LazySchema driver) {
+  public static LazySQLBuilder at(@NonNull File file, @NonNull LazySchema driver) {
     return new LazySQLBuilder(
             "jdbc:"
                 + file.getAbsoluteFile()

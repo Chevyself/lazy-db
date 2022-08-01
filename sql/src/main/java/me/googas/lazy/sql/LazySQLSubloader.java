@@ -3,7 +3,7 @@ package me.googas.lazy.sql;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import lombok.NonNull;
-import me.googas.starbox.Strings;
+import me.googas.lazy.util.Strings;
 
 /** Manages a sql table. Children of the loader {@link LazySQL} */
 public abstract class LazySQLSubloader {

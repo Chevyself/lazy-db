@@ -1,6 +1,6 @@
 package me.googas.lazy.sql;
 
-import me.googas.starbox.builders.SuppliedBuilder;
+import me.googas.lazy.builders.SuppliedBuilder;
 
 /**
  * Represents a builder for {@link LazySQLSubloader}. This is used to centralize an initialize for

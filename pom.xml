@@ -42,7 +42,7 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>format</goal>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -73,12 +73,6 @@
     </repositories>
 
     <dependencies>
-        <!-- Dependency to Starbox -->
-        <dependency>
-            <groupId>me.googas.starbox</groupId>
-            <artifactId>core</artifactId>
-            <version>4bd3e76f17</version>
-        </dependency>
         <!-- Dependency to Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
