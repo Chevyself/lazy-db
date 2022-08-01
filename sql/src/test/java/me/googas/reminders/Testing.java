@@ -1,22 +1,14 @@
 package me.googas.reminders;
 
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Properties;
-import lombok.NonNull;
-import me.googas.io.StarboxFile;
-import me.googas.io.context.PropertiesContext;
 import me.googas.lazy.Loader;
-import me.googas.lazy.sql.LazySQL;
-import me.googas.lazy.sql.LazySchema;
-import me.googas.reminders.sql.SqlRemindersSubloader;
-import me.googas.reminders.sql.SqlUserSubloader;
 
 public class Testing {
 
-  @NonNull private static final PropertiesContext context = new PropertiesContext();
   public static Loader loader;
+
+  /* FIXME
+  @NonNull private static final PropertiesContext context = new PropertiesContext();
+
 
   public static void main(String[] args) throws ClassNotFoundException, SQLException {
     Class.forName("org.sqlite.JDBC");
@@ -70,4 +62,5 @@ public class Testing {
       return Objects.requireNonNull(properties.getProperty(key));
     }
   }
+     */
 }

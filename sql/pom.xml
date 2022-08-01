@@ -7,17 +7,17 @@
     <parent>
         <groupId>me.googas.lazy</groupId>
         <artifactId>lazy-db</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.0-PRE-1</version>
     </parent>
 
     <artifactId>sql</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-PRE-1</version>
 
     <dependencies>
         <dependency>
             <groupId>me.googas.lazy</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.0-PRE-1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

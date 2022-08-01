@@ -7,18 +7,18 @@
     <parent>
         <groupId>me.googas.lazy</groupId>
         <artifactId>lazy-db</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.0-PRE-1</version>
     </parent>
 
     <artifactId>jsongo</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-PRE-1</version>
 
     <dependencies>
         <!-- Core -->
         <dependency>
             <groupId>me.googas.lazy</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.0-PRE-1</version>
         </dependency>
         <!-- Mongo -->
         <dependency>
