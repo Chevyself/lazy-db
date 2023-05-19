@@ -2,14 +2,13 @@ package me.googas.lazy.jsongo;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.lazy.Subloader;
 import org.bson.Document;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /** Manages objects using a {@link MongoCollection}. Children of the loader {@link Jsongo} */
 public abstract class JsongoSubloader<T> implements Subloader {
@@ -102,7 +101,8 @@ public abstract class JsongoSubloader<T> implements Subloader {
   protected Optional<T> get(@NonNull Document query) {
     Document document = this.collection.find(query).first();
     T other = null;
-    if (document != null) other = this.parent.getGson().fromJson(document.toJson(), this.getTypeClazz());
+    if (document != null)
+      other = this.parent.getGson().fromJson(document.toJson(), this.getTypeClazz());
     return Optional.ofNullable(other);
   }
 
