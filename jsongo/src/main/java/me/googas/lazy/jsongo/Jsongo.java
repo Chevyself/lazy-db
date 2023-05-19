@@ -34,7 +34,7 @@ public class Jsongo implements Loader {
 
   @NonNull @Getter private final MongoClient client;
   @NonNull @Getter private final MongoDatabase database;
-  @NonNull @Getter private final Set<JsongoSubloader> subloaders;
+  @NonNull @Getter private final Set<JsongoSubloader<?>> subloaders;
   @NonNull @Getter private final Gson gson;
   @NonNull @Getter private final Cache cache;
 
@@ -50,7 +50,7 @@ public class Jsongo implements Loader {
   protected Jsongo(
       @NonNull MongoClient client,
       @NonNull MongoDatabase database,
-      @NonNull Set<JsongoSubloader> subloaders,
+      @NonNull Set<JsongoSubloader<?>> subloaders,
       @NonNull Gson gson,
       @NonNull Cache cache) {
     this.client = client;
@@ -184,7 +184,7 @@ public class Jsongo implements Loader {
               .ping();
       this.subloaders.forEach(
           builder -> {
-            JsongoSubloader subloader = builder.build(jsongo);
+            JsongoSubloader<?> subloader = builder.build(jsongo);
             if (subloader != null) jsongo.getSubloaders().add(subloader);
           });
       return jsongo;

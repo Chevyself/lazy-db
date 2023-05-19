@@ -2,21 +2,27 @@ package me.googas.lazy.jsongo;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.lazy.Subloader;
-import me.googas.lazy.cache.Catchable;
 import org.bson.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 /** Manages objects using a {@link MongoCollection}. Children of the loader {@link Jsongo} */
-public abstract class JsongoSubloader implements Subloader {
+public abstract class JsongoSubloader<T> implements Subloader {
 
   @NonNull @Getter protected final Jsongo parent;
   @NonNull protected final MongoCollection<Document> collection;
+
+  /**
+   * Get the type of the object that this subloader manages.
+   *
+   * @return the type of the object
+   */
+  public abstract Class<T> getTypeClazz();
 
   /**
    * Create the subloader.
@@ -58,7 +64,7 @@ public abstract class JsongoSubloader implements Subloader {
    * @return this same instance
    */
   @NonNull
-  protected JsongoSubloader save(@NonNull Document query, @NonNull Object object) {
+  protected JsongoSubloader<T> save(@NonNull Document query, @NonNull T object) {
     Document document = Document.parse(this.parent.getGson().toJson(object));
     document.remove("_id");
     Document first = this.collection.find(query).first();
@@ -80,37 +86,24 @@ public abstract class JsongoSubloader implements Subloader {
    * @param <T> the type of the object
    * @return a {@link Optional} instance holding the nullable object
    */
+  @Deprecated
   @NonNull
-  protected <T> Optional<T> get(@NonNull Class<T> typeOfT, @NonNull Document query) {
-    Document document = this.collection.find(query).first();
-    T other = null;
-    if (document != null) other = this.parent.getGson().fromJson(document.toJson(), typeOfT);
-    return Optional.ofNullable(other);
+  protected Optional<T> get(@NonNull Class<T> typeOfT, @NonNull Document query) {
+    return this.get(query);
   }
 
   /**
-   * Get a {@link Catchable} from the database. If the object is obtained from the database it will
-   * be added to cache
+   * Get an object from the database.
    *
-   * @param typeOfC the class of the catchable
-   * @param query the query to match the catchable
-   * @param predicate the predicate to match the catchable inside the cache
-   * @param <C> the type of the catchable
-   * @return a {@link Optional} instance holding the nullable catchable
+   * @param query the query to match the object
+   * @param <T> the type of the object
+   * @return a {@link Optional} instance holding the nullable object
    */
-  @NonNull
-  protected <C extends Catchable> Optional<C> get(
-      @NonNull Class<C> typeOfC, @NonNull Document query, @NonNull Predicate<C> predicate) {
-    return Optional.ofNullable(
-        this.parent
-            .getCache()
-            .get(typeOfC, predicate, true)
-            .orElseGet(
-                () -> {
-                  Optional<C> optional = this.get(typeOfC, query);
-                  optional.ifPresent(catchable -> this.parent.getCache().add(catchable));
-                  return optional.orElse(null);
-                }));
+  protected Optional<T> get(@NonNull Document query) {
+    Document document = this.collection.find(query).first();
+    T other = null;
+    if (document != null) other = this.parent.getGson().fromJson(document.toJson(), this.getTypeClazz());
+    return Optional.ofNullable(other);
   }
 
   /**
@@ -121,13 +114,27 @@ public abstract class JsongoSubloader implements Subloader {
    * @param <T> the type of the objects
    * @return a list holding the objects
    */
+  @Deprecated
   @NonNull
-  public <T> List<T> getMany(@NonNull Class<T> typeOfT, @NonNull Document query) {
+  public List<T> getMany(@NonNull Class<T> typeOfT, @NonNull Document query) {
+    return this.getMany(query);
+  }
+
+  /**
+   * Get many objects from the database.
+   *
+   * @param query the query to match the objects
+   * @param <T> the type of the objects
+   * @return a list holding the objects
+   */
+  @NonNull
+  public List<T> getMany(@NonNull Document query) {
     List<T> list = new ArrayList<>();
-    MongoCursor<Document> cursor = this.collection.find(query).cursor();
-    while (cursor.hasNext()) {
-      T other = this.parent.getGson().fromJson(cursor.next().toJson(), typeOfT);
-      if (other != null) list.add(other);
+    try (MongoCursor<Document> cursor = this.collection.find(query).cursor()) {
+      while (cursor.hasNext()) {
+        T other = this.parent.getGson().fromJson(cursor.next().toJson(), this.getTypeClazz());
+        if (other != null) list.add(other);
+      }
     }
     return list;
   }
