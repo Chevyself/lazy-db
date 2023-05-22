@@ -1,9 +1,12 @@
 package me.googas.lazy.jsongo;
 
 import com.mongodb.client.MongoCollection;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import lombok.NonNull;
+import me.googas.lazy.cache.Cache;
 import me.googas.lazy.cache.Catchable;
 import org.bson.Document;
 
@@ -35,6 +38,7 @@ public abstract class CatchableJsongoSubloader<T extends Catchable> extends Json
    * @param <C> the type of the catchable
    * @return a {@link Optional} instance holding the nullable catchable
    */
+  @NonNull
   protected Optional<T> get(@NonNull Document query, @NonNull Predicate<T> predicate) {
     return Optional.ofNullable(
         this.parent
@@ -46,5 +50,28 @@ public abstract class CatchableJsongoSubloader<T extends Catchable> extends Json
                   optional.ifPresent(catchable -> this.parent.getCache().add(catchable));
                   return optional.orElse(null);
                 }));
+  }
+
+  /**
+   * Get {@link Catchable} from the database. This will first get all elements from the database,
+   * then the elements in cache, if there's elements from the database not in cache those will be
+   * added to the cache, and the resulting list of cached elements will be returned
+   *
+   * @param query the query to find the elements from the database
+   * @param predicate the predicate to find the elements in cache
+   * @return the elements from the database and cache
+   */
+  @NonNull
+  protected Collection<T> getMany(@NonNull Document query, @NonNull Predicate<T> predicate) {
+    Cache cache = this.parent.getCache();
+    List<T> inDatabase = this.getMany(query);
+    Collection<T> inCache = this.getParent().getCache().getMany(this.getTypeClazz(), predicate);
+    for (T catchable : inDatabase) {
+      if (!cache.contains(catchable)) {
+        this.getParent().getCache().add(catchable);
+        inCache.add(catchable);
+      }
+    }
+    return inCache;
   }
 }
