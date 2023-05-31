@@ -7,7 +7,7 @@ import me.googas.jsongo.models.User;
 import me.googas.jsongo.util.Randomizer;
 import me.googas.lazy.jsongo.Jsongo;
 import me.googas.lazy.jsongo.JsongoSubloader;
-import org.bson.Document;
+import me.googas.lazy.jsongo.Query;
 
 public class UserSubloader extends JsongoSubloader<User> {
 
@@ -20,8 +20,9 @@ public class UserSubloader extends JsongoSubloader<User> {
 
   @NonNull
   public User create(@NonNull String username) {
-    User user = new User(this.nextId(), username);
-    this.save(new Document("_id", user.getId()), user);
+    String id = this.nextId();
+    User user = new User(id, username);
+    this.save(Query.of("{_id:#}", id), user);
     return user;
   }
 
@@ -34,12 +35,12 @@ public class UserSubloader extends JsongoSubloader<User> {
 
   @NonNull
   private Optional<User> getById(@NonNull String id) {
-    return this.get(new Document("_id", id));
+    return this.get(Query.of("{_id:#}", id));
   }
 
   @NonNull
   public Optional<User> getByUsername(String username) {
-    return this.get(new Document("username", username));
+    return this.get(Query.of("{username:#}", username));
   }
 
   @Override

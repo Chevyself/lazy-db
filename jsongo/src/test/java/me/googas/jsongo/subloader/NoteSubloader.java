@@ -7,7 +7,7 @@ import me.googas.jsongo.models.User;
 import me.googas.jsongo.util.Randomizer;
 import me.googas.lazy.jsongo.Jsongo;
 import me.googas.lazy.jsongo.JsongoSubloader;
-import org.bson.Document;
+import me.googas.lazy.jsongo.Query;
 
 public class NoteSubloader extends JsongoSubloader<Note> {
 
@@ -17,14 +17,15 @@ public class NoteSubloader extends JsongoSubloader<Note> {
 
   @NonNull
   public Note create(@NonNull User user, @NonNull String value) {
-    Note note = new Note(Randomizer.nextInt(), user.getId(), value);
-    this.save(new Document("_id", note.getId()), note);
+    int id = Randomizer.nextInt();
+    Note note = new Note(id, user.getId(), value);
+    this.save(Query.of("{_id:#}", id), note);
     return note;
   }
 
   @NonNull
   public List<Note> getNotes(@NonNull User user) {
-    return this.getMany(new Document());
+    return this.getMany(Query.empty());
   }
 
   @Override

@@ -1,6 +1,5 @@
 package me.googas.jsongo.exception;
 
-
 public class TestSetupException extends RuntimeException {
   public TestSetupException(String message, Throwable cause) {
     super(message, cause);
