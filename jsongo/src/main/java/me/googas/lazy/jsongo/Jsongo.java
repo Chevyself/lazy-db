@@ -132,6 +132,7 @@ public class Jsongo implements Loader {
     @NonNull private final String database;
     @NonNull @Getter private final List<JsongoSubloaderBuilder> subloaders;
     private int timeout;
+    private boolean ssl;
     @NonNull private GsonBuilder gson;
     @NonNull private Cache cache;
 
@@ -140,6 +141,7 @@ public class Jsongo implements Loader {
       this.database = database;
       this.subloaders = new ArrayList<>();
       this.timeout = 300;
+      this.ssl = false;
       this.gson = new GsonBuilder();
       this.cache = new MemoryCache();
     }
@@ -153,6 +155,18 @@ public class Jsongo implements Loader {
     @NonNull
     public JsongoBuilder add(@NonNull JsongoSubloaderBuilder... builders) {
       this.subloaders.addAll(Arrays.asList(builders));
+      return this;
+    }
+
+    /**
+     * Set whether the client should use ssl.
+     *
+     * @param ssl whether the client should use ssl
+     * @return this same instance
+     */
+    @NonNull
+    public JsongoBuilder setSsl(boolean ssl) {
+      this.ssl = ssl;
       return this;
     }
 
@@ -198,7 +212,7 @@ public class Jsongo implements Loader {
     @Override
     public @NonNull Jsongo build() {
       MongoClientOptions.Builder options =
-          new MongoClientOptions.Builder().connectTimeout(this.timeout).sslEnabled(true);
+          new MongoClientOptions.Builder().connectTimeout(this.timeout).sslEnabled(this.ssl);
       MongoClientURI uri = new MongoClientURI(this.uri, options);
       MongoClient client = new MongoClient(uri);
       Jsongo jsongo =
