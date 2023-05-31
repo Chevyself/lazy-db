@@ -230,18 +230,18 @@ public class Jsongo implements Loader {
       MongoClient client = new MongoClient(uri);
       Jsongo jsongo =
           new Jsongo(
-                  client,
-                  client.getDatabase(this.database),
-                  new HashSet<>(),
-                  this.gson
-                      .registerTypeAdapter(Class.class, new ClassAdapter())
-                      .registerTypeAdapter(Date.class, new DateAdapter())
-                      .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                      .registerTypeAdapter(Long.class, new LongAdapter())
-                      .registerTypeAdapter(long.class, new LongAdapter())
-                      .registerTypeAdapter(ObjectId.class, new ObjectIdAdapter())
-                      .create(),
-                  this.cache);
+              client,
+              client.getDatabase(this.database),
+              new HashSet<>(),
+              this.gson
+                  .registerTypeAdapter(Class.class, new ClassAdapter())
+                  .registerTypeAdapter(Date.class, new DateAdapter())
+                  .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                  .registerTypeAdapter(Long.class, new LongAdapter())
+                  .registerTypeAdapter(long.class, new LongAdapter())
+                  .registerTypeAdapter(ObjectId.class, new ObjectIdAdapter())
+                  .create(),
+              this.cache);
       if (ping) {
         jsongo.ping();
       }
