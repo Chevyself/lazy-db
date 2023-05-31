@@ -72,6 +72,26 @@ public class Jsongo implements Loader {
     return this;
   }
 
+  /**
+   * Add subloaders to the loader.
+   *
+   * @param subloaders the subloaders to add
+   */
+  public void addSubloaders(@NonNull JsongoSubloader<?>... subloaders) {
+    for (JsongoSubloader<?> subloader : subloaders) {
+      this.addSubloader(subloader);
+    }
+  }
+
+  /**
+   * Add a subloader to the loader.
+   *
+   * @param subloader the subloader to add
+   */
+  public void addSubloader(@NonNull JsongoSubloader<?> subloader) {
+    this.subloaders.add(subloader);
+  }
+
   @Override
   public <S extends Subloader> @NonNull S getSubloader(@NonNull Class<S> clazz) {
     return this.subloaders.stream()
