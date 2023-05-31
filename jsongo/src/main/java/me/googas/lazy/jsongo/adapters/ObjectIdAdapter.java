@@ -1,4 +1,4 @@
-package me.googas.lazy.jsongo;
+package me.googas.lazy.jsongo.adapters;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -11,12 +11,7 @@ import java.lang.reflect.Type;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-/**
- * Adapter for de/serializing {@link ObjectId} from {@link Document#toJson()}.
- *
- * @deprecated moved to me.googas.lazy.jsongo.adapters
- */
-@Deprecated
+/** Adapter for de/serializing {@link ObjectId} from {@link Document#toJson()}. */
 public class ObjectIdAdapter implements JsonDeserializer<ObjectId>, JsonSerializer<ObjectId> {
 
   @Override

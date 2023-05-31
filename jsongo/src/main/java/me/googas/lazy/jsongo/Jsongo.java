@@ -7,8 +7,10 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +21,11 @@ import me.googas.lazy.Subloader;
 import me.googas.lazy.builders.Builder;
 import me.googas.lazy.cache.Cache;
 import me.googas.lazy.cache.MemoryCache;
+import me.googas.lazy.jsongo.adapters.ClassAdapter;
+import me.googas.lazy.jsongo.adapters.DateAdapter;
+import me.googas.lazy.jsongo.adapters.LocalDateTimeAdapter;
+import me.googas.lazy.jsongo.adapters.LongAdapter;
+import me.googas.lazy.jsongo.adapters.ObjectIdAdapter;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -199,7 +206,14 @@ public class Jsongo implements Loader {
                   client,
                   client.getDatabase(this.database),
                   new HashSet<>(),
-                  this.gson.registerTypeAdapter(ObjectId.class, new ObjectIdAdapter()).create(),
+                  this.gson
+                      .registerTypeAdapter(Class.class, new ClassAdapter())
+                      .registerTypeAdapter(Date.class, new DateAdapter())
+                      .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                      .registerTypeAdapter(Long.class, new LongAdapter())
+                      .registerTypeAdapter(long.class, new LongAdapter())
+                      .registerTypeAdapter(ObjectId.class, new ObjectIdAdapter())
+                      .create(),
                   this.cache)
               .ping();
       this.subloaders.forEach(
