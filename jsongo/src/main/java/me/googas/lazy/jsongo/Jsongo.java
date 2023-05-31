@@ -133,6 +133,7 @@ public class Jsongo implements Loader {
     @NonNull @Getter private final List<JsongoSubloaderBuilder> subloaders;
     private int timeout;
     private boolean ssl;
+    private boolean ping;
     @NonNull private GsonBuilder gson;
     @NonNull private Cache cache;
 
@@ -167,6 +168,18 @@ public class Jsongo implements Loader {
     @NonNull
     public JsongoBuilder setSsl(boolean ssl) {
       this.ssl = ssl;
+      return this;
+    }
+
+    /**
+     * Set whether to ping the client on initialization.
+     *
+     * @param ping whether to ping the client
+     * @return this same instance
+     */
+    @NonNull
+    public JsongoBuilder setPing(boolean ping) {
+      this.ping = ping;
       return this;
     }
 
@@ -228,8 +241,10 @@ public class Jsongo implements Loader {
                       .registerTypeAdapter(long.class, new LongAdapter())
                       .registerTypeAdapter(ObjectId.class, new ObjectIdAdapter())
                       .create(),
-                  this.cache)
-              .ping();
+                  this.cache);
+      if (ping) {
+        jsongo.ping();
+      }
       this.subloaders.forEach(
           builder -> {
             JsongoSubloader<?> subloader = builder.build(jsongo);
