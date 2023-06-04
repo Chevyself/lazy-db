@@ -10,6 +10,7 @@ import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 import java.util.Date;
 
+/** Adapter for dates in mongo format. */
 public class DateAdapter implements JsonDeserializer<Date>, JsonSerializer<Date> {
   @Override
   public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)

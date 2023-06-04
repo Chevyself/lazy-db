@@ -10,6 +10,7 @@ import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 import lombok.NonNull;
 
+@Deprecated
 public class PolymorphismAdapter<T> implements JsonDeserializer<T>, JsonSerializer<T> {
 
   @NonNull private final Class<T> clazz;

@@ -2,11 +2,10 @@ package me.googas.lazy.jsongo;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.ReplaceOptions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import com.mongodb.client.model.ReplaceOptions;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.lazy.Subloader;

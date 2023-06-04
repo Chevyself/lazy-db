@@ -12,6 +12,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+/**
+ * Adapter for {@link LocalDateTime} in mongo format. This uses the format of mongo for {@link
+ * java.util.Date}
+ */
 public class LocalDateTimeAdapter
     implements JsonDeserializer<LocalDateTime>, JsonSerializer<LocalDateTime> {
   @Override
