@@ -1,6 +1,5 @@
 package me.googas.lazy.cache;
 
-
 /** An object which can be stored inside {@link Cache}. */
 public interface Catchable {
 
