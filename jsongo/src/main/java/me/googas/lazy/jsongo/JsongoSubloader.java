@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.googas.lazy.Subloader;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 /** Manages objects using a {@link MongoCollection}. Children of the loader {@link Jsongo} */
@@ -17,22 +18,6 @@ public abstract class JsongoSubloader<T> implements Subloader {
 
   @NonNull @Getter protected final Jsongo parent;
   @NonNull protected final MongoCollection<Document> collection;
-
-  /**
-   * Save/insert an element into the collection. If the element already exists in the database it
-   * will be replaced else it will be inserted, to filter the parameter query will be used
-   *
-   * @param query the query to check if the element already exists in the database
-   * @param object the object to save
-   * @return this same instance
-   */
-  @NonNull
-  protected JsongoSubloader<T> save(@NonNull Document query, @NonNull T object) {
-    Document document = Document.parse(this.parent.getGson().toJson(object));
-    Document first = this.collection.find(query).first();
-    this.collection.replaceOne(query, document, new ReplaceOptions().upsert(true));
-    return this;
-  }
 
   /**
    * Get the type of the object that this subloader manages.
@@ -58,7 +43,7 @@ public abstract class JsongoSubloader<T> implements Subloader {
    * @param query the query to match the object
    * @return whether the element has been deleted
    */
-  protected boolean delete(@NonNull Document query) {
+  protected boolean delete(@NonNull Bson query) {
     return this.collection.deleteOne(query).getDeletedCount() > 0;
   }
 
@@ -78,7 +63,7 @@ public abstract class JsongoSubloader<T> implements Subloader {
    * @param query the query to match the objects
    * @return the amount of elements that were deleted
    */
-  protected long deleteMany(@NonNull Document query) {
+  protected long deleteMany(@NonNull Bson query) {
     return this.collection.deleteMany(query).getDeletedCount();
   }
 
@@ -113,6 +98,22 @@ public abstract class JsongoSubloader<T> implements Subloader {
    * @param object the object to save
    * @return this same instance
    */
+  @NonNull
+  protected JsongoSubloader<T> save(@NonNull Bson query, @NonNull T object) {
+    Document document = Document.parse(this.parent.getGson().toJson(object));
+    Bson first = this.collection.find(query).first();
+    this.collection.replaceOne(query, document, new ReplaceOptions().upsert(true));
+    return this;
+  }
+
+  /**
+   * Save/insert an element into the collection. If the element already exists in the database it
+   * will be replaced else it will be inserted, to filter the parameter query will be used
+   *
+   * @param query the query to check if the element already exists in the database
+   * @param object the object to save
+   * @return this same instance
+   */
   protected JsongoSubloader<T> save(@NonNull Query query, @NonNull T object) {
     return this.save(query.build(this.parent.getGson()), object);
   }
@@ -126,7 +127,7 @@ public abstract class JsongoSubloader<T> implements Subloader {
    */
   @Deprecated
   @NonNull
-  protected Optional<T> get(@NonNull Class<T> typeOfT, @NonNull Document query) {
+  protected Optional<T> get(@NonNull Class<T> typeOfT, @NonNull Bson query) {
     return this.get(query);
   }
 
@@ -136,7 +137,7 @@ public abstract class JsongoSubloader<T> implements Subloader {
    * @param query the query to match the object
    * @return a {@link Optional} instance holding the nullable object
    */
-  protected Optional<T> get(@NonNull Document query) {
+  protected Optional<T> get(@NonNull Bson query) {
     Document document = this.collection.find(query).first();
     T other = null;
     if (document != null)
@@ -164,7 +165,7 @@ public abstract class JsongoSubloader<T> implements Subloader {
    */
   @Deprecated
   @NonNull
-  protected List<T> getMany(@NonNull Class<T> typeOfT, @NonNull Document query) {
+  protected List<T> getMany(@NonNull Class<T> typeOfT, @NonNull Bson query) {
     return this.getMany(query);
   }
 
@@ -175,7 +176,7 @@ public abstract class JsongoSubloader<T> implements Subloader {
    * @return a list holding the objects
    */
   @NonNull
-  protected List<T> getMany(@NonNull Document query) {
+  protected List<T> getMany(@NonNull Bson query) {
     List<T> list = new ArrayList<>();
     try (MongoCursor<Document> cursor = this.collection.find(query).cursor()) {
       while (cursor.hasNext()) {
