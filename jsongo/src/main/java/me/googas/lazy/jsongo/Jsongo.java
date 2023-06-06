@@ -227,9 +227,6 @@ public class Jsongo implements Loader {
     @Override
     public @NonNull Jsongo build() {
       ConnectionString connectionString = new ConnectionString(this.uri);
-      // MongoClientOptions.Builder options =
-      //     new MongoClientOptions.Builder().connectTimeout(this.timeout).sslEnabled(this.ssl);
-      // MongoClientURI uri = new MongoClientURI(this.uri, options);
       MongoClientSettings.Builder settings =
           MongoClientSettings.builder()
               .applyConnectionString(connectionString)
