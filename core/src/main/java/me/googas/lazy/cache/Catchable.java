@@ -1,6 +1,5 @@
 package me.googas.lazy.cache;
 
-import lombok.NonNull;
 
 /** An object which can be stored inside {@link Cache}. */
 public interface Catchable {
