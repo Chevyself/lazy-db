@@ -2,9 +2,10 @@ package me.googas.lazy.jsongo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientURI;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.lazy.Loader;
@@ -224,10 +226,17 @@ public class Jsongo implements Loader {
 
     @Override
     public @NonNull Jsongo build() {
-      MongoClientOptions.Builder options =
-          new MongoClientOptions.Builder().connectTimeout(this.timeout).sslEnabled(this.ssl);
-      MongoClientURI uri = new MongoClientURI(this.uri, options);
-      MongoClient client = new MongoClient(uri);
+      ConnectionString connectionString = new ConnectionString(this.uri);
+      // MongoClientOptions.Builder options =
+      //     new MongoClientOptions.Builder().connectTimeout(this.timeout).sslEnabled(this.ssl);
+      // MongoClientURI uri = new MongoClientURI(this.uri, options);
+      MongoClientSettings.Builder settings =
+          MongoClientSettings.builder()
+              .applyConnectionString(connectionString)
+              .applyToSslSettings(builder -> builder.enabled(this.ssl))
+              .applyToConnectionPoolSettings(
+                  builder -> builder.maxWaitTime(this.timeout, TimeUnit.MILLISECONDS));
+      MongoClient client = MongoClients.create(settings.build());
       Jsongo jsongo =
           new Jsongo(
               client,
