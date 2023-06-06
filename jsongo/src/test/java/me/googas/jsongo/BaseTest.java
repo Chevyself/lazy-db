@@ -36,6 +36,7 @@ public class BaseTest {
         Jsongo.join(settings.getUri(), settings.getDatabase())
             .timeout(300)
             .setGson(baseBuilder)
+            .setSsl(true)
             .build();
     BaseTest.jsongo.addSubloaders(
         new NoteSubloader(BaseTest.jsongo), new UserSubloader(BaseTest.jsongo));
@@ -44,7 +45,7 @@ public class BaseTest {
   @Test
   @Order(0)
   public void setupUser() {
-    UserSubloader subloader = jsongo.getSubloader(UserSubloader.class);
+    UserSubloader subloader = BaseTest.jsongo.getSubloader(UserSubloader.class);
     String username = "Googas";
     subloader.getByUsername(username).orElseGet(() -> subloader.create(username));
   }
