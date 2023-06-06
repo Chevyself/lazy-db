@@ -18,6 +18,5 @@ public interface Catchable {
    *
    * @return the time to be removed
    */
-  @NonNull
   long getToRemove();
 }
