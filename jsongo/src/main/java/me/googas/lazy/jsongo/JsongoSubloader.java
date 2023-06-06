@@ -24,6 +24,7 @@ public abstract class JsongoSubloader<T> implements Subloader {
    *
    * @return the type of the object
    */
+  @NonNull
   public abstract Class<T> getTypeClazz();
 
   /**
