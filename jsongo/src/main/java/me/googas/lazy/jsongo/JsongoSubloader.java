@@ -97,14 +97,14 @@ public abstract class JsongoSubloader<T> implements Subloader {
    *
    * @param query the query to check if the element already exists in the database
    * @param object the object to save
-   * @return this same instance
+   * @return whether the replacement was acknowledged
    */
-  @NonNull
-  protected JsongoSubloader<T> save(@NonNull Bson query, @NonNull T object) {
+  protected boolean save(@NonNull Bson query, @NonNull T object) {
     Document document = Document.parse(this.parent.getGson().toJson(object));
     Bson first = this.collection.find(query).first();
-    this.collection.replaceOne(query, document, new ReplaceOptions().upsert(true));
-    return this;
+    return this.collection
+        .replaceOne(query, document, new ReplaceOptions().upsert(true))
+        .wasAcknowledged();
   }
 
   /**
@@ -113,9 +113,9 @@ public abstract class JsongoSubloader<T> implements Subloader {
    *
    * @param query the query to check if the element already exists in the database
    * @param object the object to save
-   * @return this same instance
+   * @return whether the replacement was acknowledged
    */
-  protected JsongoSubloader<T> save(@NonNull Query query, @NonNull T object) {
+  protected boolean save(@NonNull Query query, @NonNull T object) {
     return this.save(query.build(this.parent.getGson()), object);
   }
 
