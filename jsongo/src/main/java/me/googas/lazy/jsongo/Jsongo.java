@@ -112,6 +112,7 @@ public class Jsongo implements Loader {
 
   @Override
   public void close() {
+    cache.close();
     client.close();
   }
 

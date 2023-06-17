@@ -18,7 +18,11 @@ import me.googas.lazy.builders.Builder;
  */
 public class LazyCache implements Loader {
 
-  @NonNull @Getter @Delegate private final Cache cache;
+  @NonNull
+  @Getter
+  @Delegate(excludes = IgnoredMethods.class)
+  private final Cache cache;
+
   @NonNull @Getter private final List<Subloader> subloaders;
   @NonNull @Getter @Setter private Loader child;
 
@@ -51,7 +55,11 @@ public class LazyCache implements Loader {
 
   @Override
   public void close() {
-    // Clear cache
+    this.cache.close();
+  }
+
+  private interface IgnoredMethods {
+    void close();
   }
 
   /** This class is used to build a {@link LazyCache}. */

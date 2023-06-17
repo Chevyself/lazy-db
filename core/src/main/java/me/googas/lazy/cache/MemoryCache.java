@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
 
-public class MemoryCache extends TimerTask implements Cache {
+public class MemoryCache extends TimerTask implements CacheMap {
 
   /** The map required for the cache. */
   @NonNull @Delegate
@@ -32,7 +32,7 @@ public class MemoryCache extends TimerTask implements Cache {
 
   @Override
   public void run() {
-    Cache.super.run();
+    CacheMap.super.run();
   }
 
   @Override
@@ -41,7 +41,7 @@ public class MemoryCache extends TimerTask implements Cache {
   }
 
   @Override
-  public @NonNull Cache handle(@NonNull Consumer<Throwable> handler) {
+  public @NonNull CacheMap handle(@NonNull Consumer<Throwable> handler) {
     this.handler = handler;
     return this;
   }
