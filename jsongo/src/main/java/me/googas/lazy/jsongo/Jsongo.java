@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import me.googas.lazy.Loader;
 import me.googas.lazy.Subloader;
 import me.googas.lazy.builders.Builder;
@@ -44,8 +45,8 @@ public class Jsongo implements Loader {
   @NonNull @Getter private final MongoClient client;
   @NonNull @Getter private final MongoDatabase database;
   @NonNull @Getter private final Set<JsongoSubloader<?>> subloaders;
-  @NonNull @Getter private final Gson gson;
   @NonNull @Getter private final Cache cache;
+  @NonNull @Getter @Setter private Gson gson;
 
   /**
    * Create the loader.
