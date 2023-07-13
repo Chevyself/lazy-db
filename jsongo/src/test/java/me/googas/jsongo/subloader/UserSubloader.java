@@ -1,5 +1,6 @@
 package me.googas.jsongo.subloader;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 import lombok.NonNull;
@@ -21,7 +22,7 @@ public class UserSubloader extends JsongoSubloader<User> {
   @NonNull
   public User create(@NonNull String username) {
     String id = this.nextId();
-    User user = new User(id, username);
+    User user = new User(id, username, LocalDateTime.now());
     this.save(Query.of("{_id:#}", id), user);
     return user;
   }

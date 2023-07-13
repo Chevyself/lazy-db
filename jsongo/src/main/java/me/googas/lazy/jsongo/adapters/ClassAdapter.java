@@ -8,6 +8,10 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 
+/**
+ * Json adapter for {@link Class}. This will serialize a class to its name and deserialize it from
+ * its name using {@link Class#forName(String)}.
+ */
 public class ClassAdapter implements JsonSerializer<Class<?>>, JsonDeserializer<Class<?>> {
   @Override
   public JsonElement serialize(Class<?> clazz, Type type, JsonSerializationContext context) {

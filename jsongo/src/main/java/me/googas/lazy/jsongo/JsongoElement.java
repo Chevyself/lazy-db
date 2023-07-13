@@ -2,14 +2,14 @@ package me.googas.lazy.jsongo;
 
 import java.util.Optional;
 import lombok.NonNull;
-import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 /**
  * This interface represents an object which may be able to be identified using a {@link ObjectId}.
  * The id may only be updated once using {@link #setObjectId(ObjectId)} from {@link
- * JsongoSubloader#save(Document, Object)} then it will be deserialized automatically. It is
- * optional as if the object hasn't been saved in the database its id is not defined yet.
+ * JsongoSubloader#save(Bson, Object)} then it will be deserialized automatically. It is optional as
+ * if the object hasn't been saved in the database its id is not defined yet.
  */
 public interface JsongoElement {
 

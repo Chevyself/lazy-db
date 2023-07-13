@@ -9,6 +9,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 
+/** Adapter for longs in mongo format. */
 public class LongAdapter implements JsonDeserializer<Long>, JsonSerializer<Long> {
   @Override
   public JsonElement serialize(Long src, Type typeOfSrc, JsonSerializationContext context) {

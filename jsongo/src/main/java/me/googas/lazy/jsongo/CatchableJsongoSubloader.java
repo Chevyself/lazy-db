@@ -9,6 +9,7 @@ import lombok.NonNull;
 import me.googas.lazy.cache.Cache;
 import me.googas.lazy.cache.Catchable;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 /**
  * A subloader for catchable objects. Children of the loader {@link Jsongo}
@@ -37,7 +38,7 @@ public abstract class CatchableJsongoSubloader<T extends Catchable> extends Json
    * @return a {@link Optional} instance holding the nullable catchable
    */
   @NonNull
-  protected Optional<T> get(@NonNull Document query, @NonNull Predicate<T> predicate) {
+  protected Optional<T> get(@NonNull Bson query, @NonNull Predicate<T> predicate) {
     return Optional.ofNullable(
         this.parent
             .getCache()
@@ -72,7 +73,7 @@ public abstract class CatchableJsongoSubloader<T extends Catchable> extends Json
    * @return the elements from the database and cache
    */
   @NonNull
-  protected Collection<T> getMany(@NonNull Document query, @NonNull Predicate<T> predicate) {
+  protected Collection<T> getMany(@NonNull Bson query, @NonNull Predicate<T> predicate) {
     Cache cache = this.parent.getCache();
     List<T> inDatabase = this.getMany(query);
     Collection<T> inCache = this.getParent().getCache().getMany(this.getTypeClazz(), predicate);
@@ -88,7 +89,7 @@ public abstract class CatchableJsongoSubloader<T extends Catchable> extends Json
   /**
    * Get {@link Catchable} from the database.
    *
-   * @see #getMany(Document)
+   * @see #getMany(Bson)
    * @param query the query to find the elements from the database
    * @param predicate the predicate to find the elements in cache
    * @return the elements from the database and cache

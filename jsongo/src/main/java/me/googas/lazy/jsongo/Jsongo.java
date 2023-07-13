@@ -2,9 +2,10 @@ package me.googas.lazy.jsongo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientURI;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.lazy.Loader;
@@ -110,6 +112,7 @@ public class Jsongo implements Loader {
 
   @Override
   public void close() {
+    cache.close();
     client.close();
   }
 
@@ -132,6 +135,8 @@ public class Jsongo implements Loader {
     @NonNull private final String database;
     @NonNull @Getter private final List<JsongoSubloaderBuilder> subloaders;
     private int timeout;
+    private boolean ssl;
+    private boolean ping;
     @NonNull private GsonBuilder gson;
     @NonNull private Cache cache;
 
@@ -140,6 +145,7 @@ public class Jsongo implements Loader {
       this.database = database;
       this.subloaders = new ArrayList<>();
       this.timeout = 300;
+      this.ssl = false;
       this.gson = new GsonBuilder();
       this.cache = new MemoryCache();
     }
@@ -153,6 +159,30 @@ public class Jsongo implements Loader {
     @NonNull
     public JsongoBuilder add(@NonNull JsongoSubloaderBuilder... builders) {
       this.subloaders.addAll(Arrays.asList(builders));
+      return this;
+    }
+
+    /**
+     * Set whether the client should use ssl.
+     *
+     * @param ssl whether the client should use ssl
+     * @return this same instance
+     */
+    @NonNull
+    public JsongoBuilder setSsl(boolean ssl) {
+      this.ssl = ssl;
+      return this;
+    }
+
+    /**
+     * Set whether to ping the client on initialization.
+     *
+     * @param ping whether to ping the client
+     * @return this same instance
+     */
+    @NonNull
+    public JsongoBuilder setPing(boolean ping) {
+      this.ping = ping;
       return this;
     }
 
@@ -197,25 +227,31 @@ public class Jsongo implements Loader {
 
     @Override
     public @NonNull Jsongo build() {
-      MongoClientOptions.Builder options =
-          new MongoClientOptions.Builder().connectTimeout(this.timeout).sslEnabled(true);
-      MongoClientURI uri = new MongoClientURI(this.uri, options);
-      MongoClient client = new MongoClient(uri);
+      ConnectionString connectionString = new ConnectionString(this.uri);
+      MongoClientSettings.Builder settings =
+          MongoClientSettings.builder()
+              .applyConnectionString(connectionString)
+              .applyToSslSettings(builder -> builder.enabled(this.ssl))
+              .applyToConnectionPoolSettings(
+                  builder -> builder.maxWaitTime(this.timeout, TimeUnit.MILLISECONDS));
+      MongoClient client = MongoClients.create(settings.build());
       Jsongo jsongo =
           new Jsongo(
-                  client,
-                  client.getDatabase(this.database),
-                  new HashSet<>(),
-                  this.gson
-                      .registerTypeAdapter(Class.class, new ClassAdapter())
-                      .registerTypeAdapter(Date.class, new DateAdapter())
-                      .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                      .registerTypeAdapter(Long.class, new LongAdapter())
-                      .registerTypeAdapter(long.class, new LongAdapter())
-                      .registerTypeAdapter(ObjectId.class, new ObjectIdAdapter())
-                      .create(),
-                  this.cache)
-              .ping();
+              client,
+              client.getDatabase(this.database),
+              new HashSet<>(),
+              this.gson
+                  .registerTypeAdapter(Class.class, new ClassAdapter())
+                  .registerTypeAdapter(Date.class, new DateAdapter())
+                  .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                  .registerTypeAdapter(Long.class, new LongAdapter())
+                  .registerTypeAdapter(long.class, new LongAdapter())
+                  .registerTypeAdapter(ObjectId.class, new ObjectIdAdapter())
+                  .create(),
+              this.cache);
+      if (ping) {
+        jsongo.ping();
+      }
       this.subloaders.forEach(
           builder -> {
             JsongoSubloader<?> subloader = builder.build(jsongo);

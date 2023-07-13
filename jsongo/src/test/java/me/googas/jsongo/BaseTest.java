@@ -13,6 +13,7 @@ import java.io.Reader;
 import java.io.Writer;
 import lombok.NonNull;
 import me.googas.jsongo.exception.TestSetupException;
+import me.googas.jsongo.models.User;
 import me.googas.jsongo.subloader.NoteSubloader;
 import me.googas.jsongo.subloader.UserSubloader;
 import me.googas.lazy.jsongo.Jsongo;
@@ -36,6 +37,7 @@ public class BaseTest {
         Jsongo.join(settings.getUri(), settings.getDatabase())
             .timeout(300)
             .setGson(baseBuilder)
+            .setSsl(true)
             .build();
     BaseTest.jsongo.addSubloaders(
         new NoteSubloader(BaseTest.jsongo), new UserSubloader(BaseTest.jsongo));
@@ -44,9 +46,18 @@ public class BaseTest {
   @Test
   @Order(0)
   public void setupUser() {
-    UserSubloader subloader = jsongo.getSubloader(UserSubloader.class);
+    UserSubloader subloader = BaseTest.jsongo.getSubloader(UserSubloader.class);
     String username = "Googas";
     subloader.getByUsername(username).orElseGet(() -> subloader.create(username));
+  }
+
+  @Test
+  @Order(1)
+  public void getUser() {
+    UserSubloader subloader = BaseTest.jsongo.getSubloader(UserSubloader.class);
+    String username = "Googas";
+    User user = subloader.getByUsername(username).orElseThrow(NullPointerException::new);
+    System.out.println("User has been found: " + user);
   }
 
   @NonNull

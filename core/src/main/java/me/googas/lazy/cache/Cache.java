@@ -1,10 +1,6 @@
 package me.googas.lazy.cache;
 
-import java.lang.ref.SoftReference;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -18,16 +14,6 @@ import lombok.NonNull;
  * for their removal
  */
 public interface Cache extends Runnable {
-
-  /**
-   * Creates a copy of the current cache.
-   *
-   * @return the copy of the current cache
-   */
-  @NonNull
-  default Collection<SoftReference<Catchable>> keySetCopy() {
-    return new HashSet<>(this.getMap().keySet());
-  }
 
   /**
    * Get an object from cache. This will refresh the object inside of cache use {@link #get(Class,
@@ -53,18 +39,7 @@ public interface Cache extends Runnable {
    * @return the {@link Stream} of filtered catchables
    */
   @NonNull
-  default <T extends Catchable> Stream<T> filter(
-      @NonNull Class<T> clazz, @NonNull Predicate<T> predicate) {
-    return this.keySetCopy().stream()
-        .filter(
-            reference -> {
-              Catchable catchable = reference.get();
-              return catchable != null && clazz.isAssignableFrom(catchable.getClass());
-            })
-        .map(reference -> clazz.cast(reference.get()))
-        .filter(predicate);
-  }
-
+  <T extends Catchable> Stream<T> filter(@NonNull Class<T> clazz, @NonNull Predicate<T> predicate);
   /**
    * Get an object from cache and select whether to refresh it.
    *
@@ -123,7 +98,7 @@ public interface Cache extends Runnable {
    * @param clazz the clazz of catchables for casting
    * @param predicate the predicate to match the catchables
    * @param <T> the type of the catchables
-   * @return the list of catchables this will not be null but it could be empty
+   * @return the list of catchables this will not be null, but it could be empty
    */
   @NonNull
   default <T extends Catchable> Collection<T> getMany(
@@ -137,17 +112,7 @@ public interface Cache extends Runnable {
    * @param catchable the object to check if it is inside the cache
    * @return true if the object is inside the cache
    */
-  default boolean contains(@NonNull Catchable catchable) {
-    for (SoftReference<Catchable> reference : this.keySetCopy()) {
-      Catchable referencedCatchable = reference.get();
-      if (catchable.equals(referencedCatchable)
-          || (referencedCatchable != null
-              && catchable.hashCode() == referencedCatchable.hashCode())) {
-        return true;
-      }
-    }
-    return false;
-  }
+  boolean contains(@NonNull Catchable catchable);
 
   /**
    * Adds an object to the cache.
@@ -155,13 +120,7 @@ public interface Cache extends Runnable {
    * @param catchable the object to be added
    * @throws IllegalStateException if there's an instance of the object in cache already
    */
-  default void add(@NonNull Catchable catchable) {
-    if (this.contains(catchable)) {
-      throw new IllegalStateException(
-          "There's already an instance of " + catchable + " inside of the cache");
-    }
-    this.getMap().put(new SoftReference<>(catchable), this.getTimeToRemove(catchable));
-  }
+  void add(@NonNull Catchable catchable);
 
   /**
    * Get the time left of an object inside of cache as milliseconds.
@@ -171,17 +130,7 @@ public interface Cache extends Runnable {
    *     milliseconds
    */
   @NonNull
-  default long getTimeLeft(@NonNull Catchable catchable) {
-    return this.getMapCopy().entrySet().stream()
-        .filter(entry -> catchable.equals(entry.getKey().get()))
-        .map(
-            entry -> {
-              long millis = entry.getValue() - System.currentTimeMillis();
-              return millis < 0 ? 0 : millis;
-            })
-        .findFirst()
-        .orElse(0L);
-  }
+  long getTimeLeft(@NonNull Catchable catchable);
 
   /**
    * Removes an object from cache.
@@ -189,29 +138,17 @@ public interface Cache extends Runnable {
    * @param catchable the object to be removed
    * @return whether the object was removed from cache
    */
-  default boolean remove(@NonNull Catchable catchable) {
-    return this.getMap()
-        .keySet()
-        .removeIf(
-            reference -> {
-              Catchable stored = reference.get();
-              return catchable.equals(stored)
-                  || (stored != null && catchable.hashCode() == stored.hashCode());
-            });
-  }
+  boolean remove(@NonNull Catchable catchable);
 
   /**
    * Refreshes a catchable object.
    *
    * @param catchable the object to be cached
    */
-  default void refresh(@NonNull Catchable catchable) {
-    for (SoftReference<Catchable> reference : this.getMap().keySet()) {
-      if (catchable.equals(reference.get())) {
-        this.getMap().put(reference, this.getTimeToRemove(catchable));
-      }
-    }
-  }
+  void refresh(@NonNull Catchable catchable);
+
+  /** Closes the cache and removes all the objects inside of it. */
+  void close();
 
   /**
    * Get the time in which an object must be removed.
@@ -224,36 +161,6 @@ public interface Cache extends Runnable {
   }
 
   /**
-   * Get a copy of the cache map. To see what is the cache map
-   *
-   * @see #getMap()
-   * @return a copy of the map
-   */
-  @NonNull
-  default Map<SoftReference<Catchable>, Long> getMapCopy() {
-    return new HashMap<>(this.getMap());
-  }
-
-  /**
-   * Set the consumer to be used in exceptions.
-   *
-   * @see #getHandler()
-   * @param handler the handler
-   * @return this same instance
-   */
-  @NonNull
-  Cache handle(@NonNull Consumer<Throwable> handler);
-
-  /**
-   * This map contains the reference to the cache object and the time in millis for the object to be
-   * removed.
-   *
-   * @return the map with the reference and time of the objects
-   */
-  @NonNull
-  Map<SoftReference<Catchable>, Long> getMap();
-
-  /**
    * This consumer for {@link Throwable} is for try and catches that may be used in for {@link
    * Catchable#onRemove()}.
    *
@@ -261,24 +168,4 @@ public interface Cache extends Runnable {
    */
   @NonNull
   Consumer<Throwable> getHandler();
-
-  @Override
-  default void run() {
-    // Get a copy of the map to avoid concurrent modification exception
-    this.getMapCopy()
-        .forEach(
-            (reference, time) -> {
-              if (reference == null) return;
-              Catchable catchable = reference.get();
-              if (catchable != null && (time == null || System.currentTimeMillis() >= time)) {
-                try {
-                  catchable.onRemove();
-                } catch (Throwable e) {
-                  this.getHandler().accept(e);
-                }
-                reference.clear();
-              }
-            });
-    this.getMap().keySet().removeIf(reference -> reference.get() == null);
-  }
 }

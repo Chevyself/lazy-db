@@ -1,7 +1,5 @@
 package me.googas.lazy.cache;
 
-import lombok.NonNull;
-
 /** An object which can be stored inside {@link Cache}. */
 public interface Catchable {
 
@@ -18,6 +16,5 @@ public interface Catchable {
    *
    * @return the time to be removed
    */
-  @NonNull
   long getToRemove();
 }

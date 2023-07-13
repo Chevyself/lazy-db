@@ -201,6 +201,7 @@ public class LazySQL implements Loader {
 
   @Override
   public void close() {
+    this.cache.close();
     this.used.forEach(
         connection -> {
           try {
