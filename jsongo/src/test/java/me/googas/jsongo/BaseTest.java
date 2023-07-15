@@ -38,9 +38,8 @@ public class BaseTest {
             .timeout(300)
             .setGson(baseBuilder)
             .setSsl(true)
+            .add(NoteSubloader::new, UserSubloader::new)
             .build();
-    BaseTest.jsongo.addSubloaders(
-        new NoteSubloader(BaseTest.jsongo), new UserSubloader(BaseTest.jsongo));
   }
 
   @Test
