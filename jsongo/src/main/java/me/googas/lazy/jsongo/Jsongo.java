@@ -236,18 +236,18 @@ public class Jsongo implements Loader {
     }
 
     @Override
-    public @NonNull Configuration setGson(@NonNull GsonBuilder gson) {
-      return super.setGson(gson);
+    public @NonNull Copy setGson(@NonNull GsonBuilder gson) {
+      return (Copy) super.setGson(gson);
     }
 
     @Override
-    public @NonNull Configuration setCache(@NonNull Cache cache) {
-      return super.setCache(cache);
+    public @NonNull Copy setCache(@NonNull Cache cache) {
+      return (Copy) super.setCache(cache);
     }
 
     @Override
-    public @NonNull Configuration add(@NonNull JsongoSubloaderBuilder... builders) {
-      return super.add(builders);
+    public @NonNull Copy add(@NonNull JsongoSubloaderBuilder... builders) {
+      return (Copy) super.add(builders);
     }
 
     @Override
