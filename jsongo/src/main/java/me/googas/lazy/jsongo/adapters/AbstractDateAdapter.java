@@ -8,8 +8,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import lombok.NonNull;
 
 /**
@@ -55,9 +57,23 @@ public abstract class AbstractDateAdapter<T> implements JsonDeserializer<T>, Jso
   public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {
     JsonObject object = json.getAsJsonObject();
-    String dateValue = object.get("$date").getAsString();
-    ZonedDateTime zonedDateTime =
-        LocalDateTimeAdapter.ISO_8601.parse(dateValue, ZonedDateTime::from);
-    return this.fromZonedDateTime(zonedDateTime);
+    JsonElement dateElement = object.get("$date");
+    if (dateElement.isJsonPrimitive()) {
+      if (dateElement.getAsJsonPrimitive().isString()) {
+        String dateValue = dateElement.getAsString();
+        ZonedDateTime zonedDateTime =
+            LocalDateTimeAdapter.ISO_8601.parse(dateValue, ZonedDateTime::from);
+        return this.fromZonedDateTime(zonedDateTime);
+      } else if (dateElement.getAsJsonPrimitive().isNumber()) {
+        // In older versions of MongoDB the date was stored as a number
+        // This is not supported anymore but it is still here for backwards compatibility
+        long dateValue = dateElement.getAsLong();
+        ZonedDateTime zonedDateTime =
+            ZonedDateTime.ofInstant(new Date(dateValue).toInstant(), ZoneOffset.UTC);
+        return this.fromZonedDateTime(zonedDateTime);
+      }
+    }
+
+    throw new JsonParseException("Date element is not a primitive");
   }
 }
