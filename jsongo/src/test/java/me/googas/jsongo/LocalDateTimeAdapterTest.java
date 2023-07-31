@@ -9,6 +9,7 @@ import me.googas.lazy.jsongo.adapters.DateAdapter;
 import me.googas.lazy.jsongo.adapters.LocalDateTimeAdapter;
 import me.googas.lazy.jsongo.adapters.LongAdapter;
 import org.bson.Document;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class LocalDateTimeAdapterTest {
@@ -42,5 +43,17 @@ public class LocalDateTimeAdapterTest {
     System.out.println(parsed);
     System.out.println(parsed.toJson());
     System.out.println(gson.fromJson(parsed.toJson(), User.class));
+  }
+
+  @Test
+  public void fromString() {
+    Gson gson =
+        new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .create();
+    String json = "{\"$date\":\"2023-07-26T23:14:24.35Z\"}";
+    LocalDateTime localDateTime = gson.fromJson(json, LocalDateTime.class);
+    Assertions.assertEquals(json, gson.toJson(localDateTime));
+    System.out.println(localDateTime);
   }
 }

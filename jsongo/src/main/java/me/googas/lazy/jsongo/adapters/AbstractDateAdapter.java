@@ -11,6 +11,8 @@ import java.lang.reflect.Type;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.Date;
 import lombok.NonNull;
 
@@ -26,7 +28,11 @@ import lombok.NonNull;
 public abstract class AbstractDateAdapter<T> implements JsonDeserializer<T>, JsonSerializer<T> {
 
   protected static final DateTimeFormatter ISO_8601 =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+      new DateTimeFormatterBuilder()
+          .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+          .appendFraction(ChronoField.MILLI_OF_SECOND, 0, 3, true)
+          .appendOffsetId()
+          .toFormatter();
 
   /**
    * Get the date as a UTC date. This should bet the date as {@link java.time.ZoneOffset#UTC}
