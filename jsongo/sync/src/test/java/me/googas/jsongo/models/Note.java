@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+@Getter
 public class Note {
 
   @NonNull
   @SerializedName("_id")
-  @Getter
   private final int id;
 
   @NonNull

@@ -6,11 +6,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+@Getter
 public class User {
 
   @SerializedName("_id")
   @NonNull
-  @Getter
   private final String id;
 
   @NonNull @Getter @Setter private String username;

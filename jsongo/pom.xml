@@ -12,6 +12,13 @@
 
     <artifactId>jsongo</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>common</module>
+        <module>sync</module>
+        <module>async</module>
+    </modules>
 
     <dependencies>
         <!-- Core -->

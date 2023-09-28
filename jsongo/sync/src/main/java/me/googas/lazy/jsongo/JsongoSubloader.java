@@ -14,9 +14,11 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 /** Manages objects using a {@link MongoCollection}. Children of the loader {@link Jsongo} */
+@Getter
 public abstract class JsongoSubloader<T> implements Subloader {
 
-  @NonNull @Getter protected final Jsongo parent;
+  @NonNull
+  protected final Jsongo parent;
   @NonNull protected final MongoCollection<Document> collection;
 
   /**
