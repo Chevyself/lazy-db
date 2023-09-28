@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.googas.lazy.builders.SuppliedBuilder;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 /**
  * Represents a Mongo query in Mongoshell format. This takes a json as a string and replaces the ´#´
@@ -78,7 +79,8 @@ public class Query implements SuppliedBuilder<Gson, Document> {
       int index = 0;
       while (matcher.find() && index < objects.length) {
         String group = matcher.group();
-        this.built = this.built.replaceFirst(group, gson.toJson(objects[index]));
+        Object object = objects[index];
+        this.built = this.built.replaceFirst(group, object instanceof Bson ? ((Bson) object).toBsonDocument().toJson() : gson.toJson(object));
         index++;
       }
     }

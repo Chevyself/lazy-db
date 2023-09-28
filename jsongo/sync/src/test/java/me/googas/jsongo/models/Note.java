@@ -4,13 +4,14 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import me.googas.lazy.cache.Catchable;
 
 @Getter
-public class Note {
+public class Note implements Catchable {
 
   @NonNull
-  @SerializedName("_id")
-  private final int id;
+  @SerializedName("_ida")
+  private final int ida;
 
   @NonNull
   @SerializedName("user")
@@ -19,9 +20,14 @@ public class Note {
 
   @Getter @Setter private String value;
 
-  public Note(int id, @NonNull String userId, String value) {
-    this.id = id;
+  public Note(int ida, @NonNull String userId, String value) {
+    this.ida = ida;
     this.userId = userId;
     this.value = value;
+  }
+
+  @Override
+  public long getToRemove() {
+    return 3000;
   }
 }

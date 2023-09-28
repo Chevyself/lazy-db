@@ -1,13 +1,22 @@
 package me.googas.lazy.sync;
 
 import com.mongodb.client.MongoCollection;
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import com.mongodb.client.model.Filters;
 import lombok.NonNull;
 import me.googas.lazy.cache.Cache;
 import me.googas.lazy.cache.Catchable;
+import me.googas.lazy.jsongo.query.ElementIdSupplier;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -17,6 +26,9 @@ import org.bson.conversions.Bson;
  * @param <T> the type of the catchable
  */
 public abstract class CatchableJsongoSubloader<T extends Catchable> extends JsongoSubloader<T> {
+
+  @NonNull
+  private final Map<Class<?>, ElementIdSupplier> elementIdSuppliers = new HashMap<>();
 
   /**
    * Create the subloader.
@@ -73,17 +85,27 @@ public abstract class CatchableJsongoSubloader<T extends Catchable> extends Json
    * @return the elements from the database and cache
    */
   @NonNull
-  protected Collection<T> getMany(@NonNull Bson query, @NonNull Predicate<T> predicate) {
+  protected List<T> getMany(@NonNull Bson query, @NonNull Predicate<T> predicate) {
     Cache cache = this.parent.getCache();
-    List<T> inDatabase = this.getMany(query);
     Collection<T> inCache = this.getParent().getCache().getMany(this.getTypeClazz(), predicate);
+    // Add to query 'not' to get the elements that are not in cache
+    if (!inCache.isEmpty()) {
+      List<Object> ids = inCache.stream().map(catchable -> this.getIdSupplier(catchable).getId(catchable)).collect(Collectors.toList());
+      query = Query.of("{$and: [{_id: {$nin: #}}, #]}", ids, query).build(this.parent.getGson());
+    }
+    List<T> inDatabase = this.getMany(query);
     for (T catchable : inDatabase) {
       if (!cache.contains(catchable)) {
         this.getParent().getCache().add(catchable);
         inCache.add(catchable);
       }
     }
-    return inCache;
+    return new ArrayList<>(inCache);
+  }
+
+  @NonNull
+  private ElementIdSupplier getIdSupplier(@NonNull Catchable catchable) {
+    return this.elementIdSuppliers.computeIfAbsent(catchable.getClass(), key -> ElementIdSupplier.getSupplier(catchable));
   }
 
   /**

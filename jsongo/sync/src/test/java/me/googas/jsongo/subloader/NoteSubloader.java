@@ -1,15 +1,17 @@
 package me.googas.jsongo.subloader;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.NonNull;
 import me.googas.jsongo.models.Note;
 import me.googas.jsongo.models.User;
 import me.googas.jsongo.util.Randomizer;
+import me.googas.lazy.sync.CatchableJsongoSubloader;
 import me.googas.lazy.sync.Jsongo;
 import me.googas.lazy.sync.JsongoSubloader;
 import me.googas.lazy.sync.Query;
 
-public class NoteSubloader extends JsongoSubloader<Note> {
+public class NoteSubloader extends CatchableJsongoSubloader<Note> {
 
   public NoteSubloader(@NonNull Jsongo parent) {
     super(parent, parent.getDatabase().getCollection("notes"));
@@ -25,7 +27,7 @@ public class NoteSubloader extends JsongoSubloader<Note> {
 
   @NonNull
   public List<Note> getNotes(@NonNull User user) {
-    return this.getMany(Query.empty());
+    return new ArrayList<>(this.getMany(Query.empty(), note -> note.getUserId().equals(user.getId())));
   }
 
   @Override
