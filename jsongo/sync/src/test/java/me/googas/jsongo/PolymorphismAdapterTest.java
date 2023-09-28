@@ -30,7 +30,7 @@ public class PolymorphismAdapterTest {
     System.out.println(dogJson);
     System.out.println(catJson);
     Animal dogFromJson = gson.fromJson(dogJson, Dog.class);
-    Animal catFromJson = gson.fromJson(catJson, Dog.class);
+    Animal catFromJson = gson.fromJson(catJson, Cat.class);
     // Dog dog2 = gson.fromJson("{_type=\"doggy\", value={}}", Dog.class);
     dogFromJson.sound();
     catFromJson.sound();

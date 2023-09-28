@@ -3,11 +3,11 @@ package me.googas.lazy.jsongo;
 import java.util.ArrayList;
 import lombok.NonNull;
 
-/** This builder is used to build a {@link Jsongo} instance in a neat way. */
+/** This builder is used to build a {@link AbstractJsongo} instance in a neat way. */
 public abstract class AbstractJsongoBuilder<
         B extends IJsongoSubloaderBuilder<T, I>,
         T extends AbstractJsongo<I>,
-        I extends IJsongoSubloader<T>>
+        I extends IJsongoSubloader<?>>
     extends Configuration<B, T, I> {
 
   @NonNull protected final String uri;
@@ -16,7 +16,7 @@ public abstract class AbstractJsongoBuilder<
   protected boolean ssl;
   protected boolean ping;
 
-  private AbstractJsongoBuilder(@NonNull String uri, @NonNull String database) {
+  protected AbstractJsongoBuilder(@NonNull String uri, @NonNull String database) {
     super(new ArrayList<>());
     this.uri = uri;
     this.database = database;

@@ -1,4 +1,4 @@
-package me.googas.lazy.jsongo;
+package me.googas.lazy.sync;
 
 import com.mongodb.client.MongoCollection;
 import java.util.Collection;

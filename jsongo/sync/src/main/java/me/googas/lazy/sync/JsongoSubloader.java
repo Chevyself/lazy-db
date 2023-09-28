@@ -1,4 +1,4 @@
-package me.googas.lazy.jsongo;
+package me.googas.lazy.sync;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -8,14 +8,13 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.lazy.Subloader;
+import me.googas.lazy.jsongo.IJsongoSubloader;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 
 /** Manages objects using a {@link MongoCollection}. Children of the loader {@link Jsongo} */
 @Getter
-public abstract class JsongoSubloader<T> implements Subloader {
+public abstract class JsongoSubloader<T> implements IJsongoSubloader<T> {
 
   @NonNull protected final Jsongo parent;
   @NonNull protected final MongoCollection<Document> collection;
@@ -80,19 +79,6 @@ public abstract class JsongoSubloader<T> implements Subloader {
   }
 
   /**
-   * Whether the field ´_id´ should be removed from the save query. This is useful when the primary
-   * key is not the default one as {@link ObjectId}. Although it is recommended to override the
-   * ´_id´ field
-   *
-   * @deprecated unused
-   * @return whether the field should be removed
-   */
-  @Deprecated
-  public boolean isRemoveIdFromDocument() {
-    return false;
-  }
-
-  /**
    * Save/insert an element into the collection. If the element already exists in the database it
    * will be replaced else it will be inserted, to filter the parameter query will be used
    *
@@ -123,19 +109,6 @@ public abstract class JsongoSubloader<T> implements Subloader {
   /**
    * Get an object from the database.
    *
-   * @param typeOfT The class of the object
-   * @param query the query to match the object
-   * @return a {@link Optional} instance holding the nullable object
-   */
-  @Deprecated
-  @NonNull
-  protected Optional<T> get(@NonNull Class<T> typeOfT, @NonNull Bson query) {
-    return this.get(query);
-  }
-
-  /**
-   * Get an object from the database.
-   *
    * @param query the query to match the object
    * @return a {@link Optional} instance holding the nullable object
    */
@@ -156,19 +129,6 @@ public abstract class JsongoSubloader<T> implements Subloader {
   @NonNull
   protected Optional<T> get(@NonNull Query query) {
     return this.get(query.build(this.parent.getGson()));
-  }
-
-  /**
-   * Get many objects.
-   *
-   * @param typeOfT the type of the objects to get
-   * @param query the query to match the objects
-   * @return a list holding the objects
-   */
-  @Deprecated
-  @NonNull
-  protected List<T> getMany(@NonNull Class<T> typeOfT, @NonNull Bson query) {
-    return this.getMany(query);
   }
 
   /**

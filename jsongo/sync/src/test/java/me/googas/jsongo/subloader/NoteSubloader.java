@@ -5,9 +5,9 @@ import lombok.NonNull;
 import me.googas.jsongo.models.Note;
 import me.googas.jsongo.models.User;
 import me.googas.jsongo.util.Randomizer;
-import me.googas.lazy.jsongo.Jsongo;
-import me.googas.lazy.jsongo.JsongoSubloader;
-import me.googas.lazy.jsongo.Query;
+import me.googas.lazy.sync.Jsongo;
+import me.googas.lazy.sync.JsongoSubloader;
+import me.googas.lazy.sync.Query;
 
 public class NoteSubloader extends JsongoSubloader<Note> {
 

@@ -14,13 +14,12 @@ import me.googas.lazy.jsongo.adapters.ClassAdapter;
 import me.googas.lazy.jsongo.adapters.DateAdapter;
 import me.googas.lazy.jsongo.adapters.LocalDateTimeAdapter;
 import me.googas.lazy.jsongo.adapters.LongAdapter;
-import me.googas.lazy.jsongo.adapters.ObjectIdAdapter;
 
 @Getter
 abstract class Configuration<
         B extends IJsongoSubloaderBuilder<T, I>,
         T extends AbstractJsongo<I>,
-        I extends IJsongoSubloader<T>>
+        I extends IJsongoSubloader<?>>
     implements Builder<T> {
 
   @NonNull private final List<B> subloaders;
@@ -37,9 +36,11 @@ abstract class Configuration<
   protected T configureSubloadersBuilder(@NonNull T built) {
     this.subloaders.stream()
         .map(builder -> builder.build(built))
-        .forEach(built.getSubloaders()::add);
+        .forEach(builtSubloader -> this.addSubloader(built, builtSubloader));
     return built;
   }
+
+  protected abstract void addSubloader(@NonNull T built, @NonNull I builtSubloader);
 
   /**
    * Add subloader builds for jsongo.
@@ -47,9 +48,8 @@ abstract class Configuration<
    * @param builders the builders to be added
    * @return this same instance
    */
-  @SafeVarargs
   @NonNull
-  public final Configuration<B, T, I> add(@NonNull B... builders) {
+  public Configuration<B, T, I> add(@NonNull B... builders) {
     this.subloaders.addAll(Arrays.asList(builders));
     return this;
   }
@@ -70,8 +70,8 @@ abstract class Configuration<
 
   /**
    * Set the {@link GsonBuilder} instance to build the {@link Gson} for the client. Even if a new
-   * instance of {@link GsonBuilder} is set any kind of adapters made for {@link ObjectId} will be
-   * overwritten by {@link ObjectIdAdapter} at {@link #build()}
+   * instance of {@link GsonBuilder} is set any kind of adapters made for 'ObjectId' will be
+   * overwritten by an adapter at {@link #build()}
    *
    * @param gson the new gson builder instance
    * @return this same instance

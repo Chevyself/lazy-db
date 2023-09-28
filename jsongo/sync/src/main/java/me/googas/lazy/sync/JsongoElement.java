@@ -1,4 +1,4 @@
-package me.googas.lazy.jsongo;
+package me.googas.lazy.sync;
 
 import java.util.Optional;
 import lombok.NonNull;

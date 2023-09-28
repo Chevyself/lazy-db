@@ -1,3 +1,5 @@
 package me.googas.lazy.jsongo;
 
-public interface IJsongoSubloader<T> {}
+import me.googas.lazy.Subloader;
+
+public interface IJsongoSubloader<T> extends Subloader {}

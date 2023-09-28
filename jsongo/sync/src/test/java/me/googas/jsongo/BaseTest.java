@@ -16,7 +16,7 @@ import me.googas.jsongo.exception.TestSetupException;
 import me.googas.jsongo.models.User;
 import me.googas.jsongo.subloader.NoteSubloader;
 import me.googas.jsongo.subloader.UserSubloader;
-import me.googas.lazy.jsongo.Jsongo;
+import me.googas.lazy.sync.Jsongo;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
