@@ -12,4 +12,13 @@
 
     <artifactId>sync</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <!-- Mongo -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>4.8.2</version>
+        </dependency>
+    </dependencies>
 </project>

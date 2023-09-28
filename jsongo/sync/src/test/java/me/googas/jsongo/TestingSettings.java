@@ -6,8 +6,7 @@ import lombok.NonNull;
 @Getter
 public class TestingSettings {
 
-  @NonNull
-  private final String uri;
+  @NonNull private final String uri;
   @NonNull @Getter private final String database;
 
   public TestingSettings(@NonNull String uri, @NonNull String database) {

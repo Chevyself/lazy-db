@@ -27,12 +27,6 @@
             <artifactId>core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!-- Mongo -->
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.8.2</version>
-        </dependency>
         <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>

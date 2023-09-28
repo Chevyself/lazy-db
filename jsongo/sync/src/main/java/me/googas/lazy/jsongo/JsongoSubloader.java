@@ -17,8 +17,7 @@ import org.bson.types.ObjectId;
 @Getter
 public abstract class JsongoSubloader<T> implements Subloader {
 
-  @NonNull
-  protected final Jsongo parent;
+  @NonNull protected final Jsongo parent;
   @NonNull protected final MongoCollection<Document> collection;
 
   /**

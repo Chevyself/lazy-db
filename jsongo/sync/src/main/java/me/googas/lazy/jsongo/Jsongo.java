@@ -42,8 +42,7 @@ import org.bson.types.ObjectId;
 @Getter
 public class Jsongo implements Loader {
 
-  @NonNull
-  private final MongoClient client;
+  @NonNull private final MongoClient client;
   @NonNull @Getter private final MongoDatabase database;
   @NonNull @Getter private final Cache cache;
   @NonNull @Getter private final Gson gson;
@@ -268,8 +267,7 @@ public class Jsongo implements Loader {
   @Getter
   private abstract static class Configuration implements me.googas.lazy.builders.Builder<Jsongo> {
 
-    @NonNull
-    private final List<JsongoSubloaderBuilder> subloaders;
+    @NonNull private final List<JsongoSubloaderBuilder> subloaders;
     @NonNull private GsonBuilder gson;
     protected Cache cache;
 
