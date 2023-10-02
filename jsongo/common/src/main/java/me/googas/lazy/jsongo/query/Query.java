@@ -1,4 +1,4 @@
-package me.googas.lazy.sync;
+package me.googas.lazy.jsongo.query;
 
 import com.google.gson.Gson;
 import java.util.regex.Matcher;

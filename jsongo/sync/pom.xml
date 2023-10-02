@@ -20,6 +20,7 @@
             <artifactId>mongodb-driver-sync</artifactId>
             <version>4.8.2</version>
         </dependency>
+        <!-- Jsongo core -->
         <dependency>
             <groupId>me.googas.lazy</groupId>
             <artifactId>common</artifactId>

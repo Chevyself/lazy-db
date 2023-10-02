@@ -8,15 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.mongodb.client.model.Filters;
 import lombok.NonNull;
 import me.googas.lazy.cache.Cache;
 import me.googas.lazy.cache.Catchable;
 import me.googas.lazy.jsongo.query.ElementIdSupplier;
+import me.googas.lazy.jsongo.query.Query;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 

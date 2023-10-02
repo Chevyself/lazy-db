@@ -8,8 +8,7 @@ import me.googas.jsongo.models.User;
 import me.googas.jsongo.util.Randomizer;
 import me.googas.lazy.sync.CatchableJsongoSubloader;
 import me.googas.lazy.sync.Jsongo;
-import me.googas.lazy.sync.JsongoSubloader;
-import me.googas.lazy.sync.Query;
+import me.googas.lazy.jsongo.query.Query;
 
 public class NoteSubloader extends CatchableJsongoSubloader<Note> {
 
@@ -31,7 +30,7 @@ public class NoteSubloader extends CatchableJsongoSubloader<Note> {
   }
 
   @Override
-  public Class<Note> getTypeClazz() {
+  public @NonNull Class<Note> getTypeClazz() {
     return Note.class;
   }
 }

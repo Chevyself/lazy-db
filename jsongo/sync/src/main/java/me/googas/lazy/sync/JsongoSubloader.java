@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.lazy.jsongo.IJsongoSubloader;
+import me.googas.lazy.jsongo.query.Query;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
