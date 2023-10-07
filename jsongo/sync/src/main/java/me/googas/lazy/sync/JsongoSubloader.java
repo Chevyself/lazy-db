@@ -89,7 +89,6 @@ public abstract class JsongoSubloader<T> implements IJsongoSubloader<T> {
    */
   protected boolean save(@NonNull Bson query, @NonNull T object) {
     Document document = Document.parse(this.parent.getGson().toJson(object));
-    Bson first = this.collection.find(query).first();
     return this.collection
         .replaceOne(query, document, new ReplaceOptions().upsert(true))
         .wasAcknowledged();
