@@ -80,7 +80,12 @@ public class Query implements SuppliedBuilder<Gson, Document> {
       while (matcher.find() && index < objects.length) {
         String group = matcher.group();
         Object object = objects[index];
-        this.built = this.built.replaceFirst(group, object instanceof Bson ? ((Bson) object).toBsonDocument().toJson() : gson.toJson(object));
+        this.built =
+            this.built.replaceFirst(
+                group,
+                object instanceof Bson
+                    ? ((Bson) object).toBsonDocument().toJson()
+                    : gson.toJson(object));
         index++;
       }
     }

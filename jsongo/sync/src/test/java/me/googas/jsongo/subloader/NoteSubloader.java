@@ -6,9 +6,9 @@ import lombok.NonNull;
 import me.googas.jsongo.models.Note;
 import me.googas.jsongo.models.User;
 import me.googas.jsongo.util.Randomizer;
+import me.googas.lazy.jsongo.query.Query;
 import me.googas.lazy.sync.CatchableJsongoSubloader;
 import me.googas.lazy.sync.Jsongo;
-import me.googas.lazy.jsongo.query.Query;
 
 public class NoteSubloader extends CatchableJsongoSubloader<Note> {
 
@@ -26,7 +26,8 @@ public class NoteSubloader extends CatchableJsongoSubloader<Note> {
 
   @NonNull
   public List<Note> getNotes(@NonNull User user) {
-    return new ArrayList<>(this.getMany(Query.empty(), note -> note.getUserId().equals(user.getId())));
+    return new ArrayList<>(
+        this.getMany(Query.empty(), note -> note.getUserId().equals(user.getId())));
   }
 
   @Override

@@ -14,6 +14,8 @@ import me.googas.lazy.jsongo.adapters.ClassAdapter;
 import me.googas.lazy.jsongo.adapters.DateAdapter;
 import me.googas.lazy.jsongo.adapters.LocalDateTimeAdapter;
 import me.googas.lazy.jsongo.adapters.LongAdapter;
+import me.googas.lazy.jsongo.adapters.ObjectIdAdapter;
+import org.bson.types.ObjectId;
 
 @Getter
 abstract class Configuration<
@@ -54,18 +56,16 @@ abstract class Configuration<
     return this;
   }
 
-  public abstract void configureObjectIdAdapter(@NonNull GsonBuilder gson);
-
   @NonNull
   protected Gson configureGson() {
-    this.gson
+    return this.gson
         .registerTypeAdapter(Class.class, new ClassAdapter())
         .registerTypeAdapter(Date.class, new DateAdapter())
         .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
         .registerTypeAdapter(Long.class, new LongAdapter())
-        .registerTypeAdapter(long.class, new LongAdapter());
-    this.configureObjectIdAdapter(this.gson);
-    return this.gson.create();
+        .registerTypeAdapter(long.class, new LongAdapter())
+        .registerTypeAdapter(ObjectId.class, new ObjectIdAdapter())
+        .create();
   }
 
   /**

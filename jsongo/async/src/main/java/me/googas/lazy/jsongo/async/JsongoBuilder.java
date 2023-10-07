@@ -1,10 +1,10 @@
-package me.googas.lazy.sync;
+package me.googas.lazy.jsongo.async;
 
 import com.google.gson.GsonBuilder;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import com.mongodb.reactivestreams.client.MongoClient;
+import com.mongodb.reactivestreams.client.MongoClients;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 import lombok.NonNull;
@@ -14,9 +14,13 @@ import me.googas.lazy.jsongo.AbstractJsongoBuilder;
 
 public class JsongoBuilder
     extends AbstractJsongoBuilder<JsongoSubloaderBuilder, Jsongo, JsongoSubloader<?>> {
-
   protected JsongoBuilder(@NonNull String uri, @NonNull String database) {
     super(uri, database);
+  }
+
+  @Override
+  protected void addSubloader(@NonNull Jsongo built, @NonNull JsongoSubloader<?> builtSubloader) {
+    built.addSubloader(builtSubloader);
   }
 
   @Override
@@ -35,6 +39,11 @@ public class JsongoBuilder
   }
 
   @Override
+  public @NonNull JsongoBuilder add(@NonNull JsongoSubloaderBuilder... builders) {
+    return (JsongoBuilder) super.add(builders);
+  }
+
+  @Override
   public @NonNull JsongoBuilder setGson(@NonNull GsonBuilder gson) {
     return (JsongoBuilder) super.setGson(gson);
   }
@@ -45,17 +54,6 @@ public class JsongoBuilder
   }
 
   @Override
-  protected void addSubloader(@NonNull Jsongo built, @NonNull JsongoSubloader<?> builtSubloader) {
-    built.addSubloader(builtSubloader);
-  }
-
-  @Override
-  public @NonNull JsongoBuilder add(@NonNull JsongoSubloaderBuilder... builders) {
-    return (JsongoBuilder) super.add(builders);
-  }
-
-  @Override
-  @NonNull
   public Jsongo build() {
     ConnectionString connectionString = new ConnectionString(this.uri);
     MongoClientSettings.Builder settings =
@@ -69,8 +67,8 @@ public class JsongoBuilder
         new Jsongo(
             client,
             client.getDatabase(this.database),
-            this.configureGson(),
             this.cache == null ? new MemoryCache() : this.cache,
+            this.configureGson(),
             new HashSet<>());
     if (this.ping) {
       jsongo.ping();

@@ -6,7 +6,7 @@ import java.util.HashSet;
 import lombok.NonNull;
 import me.googas.lazy.cache.Cache;
 import me.googas.lazy.jsongo.AbstractCopy;
-import me.googas.lazy.sync.adapters.ObjectIdAdapter;
+import me.googas.lazy.jsongo.adapters.ObjectIdAdapter;
 import org.bson.types.ObjectId;
 
 public class JsongoCopy extends AbstractCopy<JsongoSubloaderBuilder, Jsongo, JsongoSubloader<?>> {

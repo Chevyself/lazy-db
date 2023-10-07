@@ -112,6 +112,7 @@ public abstract class JsongoSubloader<T> implements IJsongoSubloader<T> {
    * @param query the query to match the object
    * @return a {@link Optional} instance holding the nullable object
    */
+  @NonNull
   protected Optional<T> get(@NonNull Bson query) {
     Document document = this.collection.find(query).first();
     T other = null;

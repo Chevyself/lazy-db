@@ -1,4 +1,4 @@
-package me.googas.lazy.sync.adapters;
+package me.googas.lazy.jsongo.adapters;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

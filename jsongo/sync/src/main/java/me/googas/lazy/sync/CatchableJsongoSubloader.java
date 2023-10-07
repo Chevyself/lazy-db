@@ -1,7 +1,6 @@
 package me.googas.lazy.sync;
 
 import com.mongodb.client.MongoCollection;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
 import lombok.NonNull;
 import me.googas.lazy.cache.Cache;
 import me.googas.lazy.cache.Catchable;
@@ -26,8 +24,7 @@ import org.bson.conversions.Bson;
  */
 public abstract class CatchableJsongoSubloader<T extends Catchable> extends JsongoSubloader<T> {
 
-  @NonNull
-  private final Map<Class<?>, ElementIdSupplier> elementIdSuppliers = new HashMap<>();
+  @NonNull private final Map<Class<?>, ElementIdSupplier> elementIdSuppliers = new HashMap<>();
 
   /**
    * Create the subloader.
@@ -89,7 +86,10 @@ public abstract class CatchableJsongoSubloader<T extends Catchable> extends Json
     Collection<T> inCache = this.getParent().getCache().getMany(this.getTypeClazz(), predicate);
     // Add to query 'not' to get the elements that are not in cache
     if (!inCache.isEmpty()) {
-      List<Object> ids = inCache.stream().map(catchable -> this.getIdSupplier(catchable).getId(catchable)).collect(Collectors.toList());
+      List<Object> ids =
+          inCache.stream()
+              .map(catchable -> this.getIdSupplier(catchable).getId(catchable))
+              .collect(Collectors.toList());
       query = Query.of("{$and: [{_id: {$nin: #}}, #]}", ids, query).build(this.parent.getGson());
     }
     List<T> inDatabase = this.getMany(query);
@@ -104,7 +104,8 @@ public abstract class CatchableJsongoSubloader<T extends Catchable> extends Json
 
   @NonNull
   private ElementIdSupplier getIdSupplier(@NonNull Catchable catchable) {
-    return this.elementIdSuppliers.computeIfAbsent(catchable.getClass(), key -> ElementIdSupplier.getSupplier(catchable));
+    return this.elementIdSuppliers.computeIfAbsent(
+        catchable.getClass(), key -> ElementIdSupplier.getSupplier(catchable));
   }
 
   /**

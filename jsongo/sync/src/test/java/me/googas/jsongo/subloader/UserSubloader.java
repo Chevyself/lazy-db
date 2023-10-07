@@ -6,9 +6,9 @@ import java.util.Random;
 import lombok.NonNull;
 import me.googas.jsongo.models.User;
 import me.googas.jsongo.util.Randomizer;
+import me.googas.lazy.jsongo.query.Query;
 import me.googas.lazy.sync.Jsongo;
 import me.googas.lazy.sync.JsongoSubloader;
-import me.googas.lazy.jsongo.query.Query;
 
 public class UserSubloader extends JsongoSubloader<User> {
 
