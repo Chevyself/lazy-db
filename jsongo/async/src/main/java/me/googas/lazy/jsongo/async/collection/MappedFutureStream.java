@@ -13,7 +13,7 @@ public class MappedFutureStream<K, V> implements FutureStream<V> {
 
   public MappedFutureStream(@NonNull Function<K, V> mapper) {
     this.mapper = mapper;
-    this.delegate = new AccumulatorFutureStream<>(0);
+    this.delegate = new AccumulatorFutureStream<>(null, 0);
   }
 
   public void acceptUnmapped(K k) {

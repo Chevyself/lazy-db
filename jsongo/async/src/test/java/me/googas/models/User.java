@@ -12,6 +12,7 @@ public class User {
   @SerializedName("_id")
   @NonNull
   private final String id;
+
   @NonNull private final LocalDateTime createdAt;
   @NonNull @Getter @Setter private String username;
 

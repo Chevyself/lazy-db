@@ -1,5 +1,6 @@
 package me.googas.lazy.jsongo.async;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import lombok.NonNull;
@@ -25,13 +26,13 @@ public class ReactiveStreamBuilder<K, V> {
     return future;
   }
 
-  public @NonNull FutureStream<V> asCollection(long limit) {
-    AccumulatorFutureStream<V> stream = new AccumulatorFutureStream<>(limit);
+  public @NonNull FutureStream<V> asCollection(Collection<? extends V> initial, long limit) {
+    AccumulatorFutureStream<V> stream = new AccumulatorFutureStream<>(initial, limit);
     this.publisher.subscribe(new CollectionSubscriber<>(stream, function));
     return stream;
   }
 
   public @NonNull FutureStream<V> asCollection() {
-    return this.asCollection(Long.MAX_VALUE);
+    return this.asCollection(null, Long.MAX_VALUE);
   }
 }

@@ -1,6 +1,8 @@
 package me.googas.lazy.jsongo.async.collection;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -18,11 +20,12 @@ public class AccumulatorFutureStream<T> implements FutureStream<T> {
   private Consumer<Throwable> error;
   private FutureStreamOperation<T> operation;
 
-  public AccumulatorFutureStream(long limit) {
+  public AccumulatorFutureStream(Collection<? extends T> initial, long limit) {
     this.limit = limit;
-    this.accumulator = new ArrayList<>();
-    this.errors = new ArrayList<>();
+    this.accumulator = Collections.synchronizedList(new ArrayList<>());
+    this.errors = Collections.synchronizedList(new ArrayList<>());
     this.error = Throwable::printStackTrace;
+    if (initial != null) this.accumulator.addAll(initial);
   }
 
   public void onError(@NonNull Consumer<Throwable> error) {
@@ -52,17 +55,18 @@ public class AccumulatorFutureStream<T> implements FutureStream<T> {
   public <V> FutureStream<V> map(@NonNull Function<T, V> mapper) {
     if (this.operation != null) throw new IllegalStateException("There's already an operation");
     MappedFutureStream<T, V> mapped = new MappedFutureStream<>(mapper);
-    FutureStreamOperation<T> operation = new FutureStreamOperation<T>() {
-      @Override
-      public void onNext(T t) {
-        mapped.acceptUnmapped(t);
-      }
+    FutureStreamOperation<T> operation =
+        new FutureStreamOperation<T>() {
+          @Override
+          public void onNext(T t) {
+            mapped.acceptUnmapped(t);
+          }
 
-      @Override
-      public void onComplete() {
-        mapped.onComplete();
-      }
-    };
+          @Override
+          public void onComplete() {
+            mapped.onComplete();
+          }
+        };
     this.setOperation(operation);
     return mapped;
   }

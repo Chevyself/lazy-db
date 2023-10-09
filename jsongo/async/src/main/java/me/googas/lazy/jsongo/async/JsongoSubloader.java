@@ -5,6 +5,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.reactivestreams.client.MongoCollection;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import lombok.NonNull;
 import me.googas.lazy.jsongo.IJsongoSubloader;
 import me.googas.lazy.jsongo.async.collection.FutureStream;
@@ -70,11 +71,20 @@ public abstract class JsongoSubloader<T> implements IJsongoSubloader<Jsongo> {
   }
 
   @NonNull
-  protected FutureStream<T> getMany(@NonNull Bson query) {
+  ReactiveStreamBuilder<Document, T> getManyBuilder(
+      @NonNull Bson query, @NonNull Consumer<T> onBuild) {
     return Streams.of(
-            this.collection.find(query),
-            document -> this.parent.getGson().fromJson(document.toJson(), this.getTypeClazz()))
-        .asCollection();
+        this.collection.find(query),
+        document -> {
+          T t = this.parent.getGson().fromJson(document.toJson(), this.getTypeClazz());
+          onBuild.accept(t);
+          return t;
+        });
+  }
+
+  @NonNull
+  protected FutureStream<T> getMany(@NonNull Bson query) {
+    return this.getManyBuilder(query, t -> {}).asCollection();
   }
 
   @NonNull

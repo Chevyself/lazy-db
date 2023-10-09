@@ -129,7 +129,6 @@ public interface Cache extends Runnable {
    * @return the time of the object inside of cache. If the object is null it will return 0
    *     milliseconds
    */
-  @NonNull
   long getTimeLeft(@NonNull Catchable catchable);
 
   /**
