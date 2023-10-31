@@ -13,6 +13,7 @@
         <module>core</module>
         <module>sql</module>
         <module>jsongo</module>
+        <module>hibernate</module>
     </modules>
 
     <properties>
