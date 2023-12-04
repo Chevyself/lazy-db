@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
-
 import lombok.NonNull;
 import me.googas.jsongo.exception.TestSetupException;
 import me.googas.jsongo.models.Note;
@@ -69,7 +68,7 @@ public class BaseTest {
     String username = "Googas";
     User user = userSubloader.getByUsername(username).orElseThrow(NullPointerException::new);
     for (int i = 0; i < 10; i++) {
-        subloader.create(user, "Note " + i);
+      subloader.create(user, "Note " + i);
     }
   }
 
