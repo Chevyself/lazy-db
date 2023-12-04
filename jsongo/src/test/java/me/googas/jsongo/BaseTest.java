@@ -11,8 +11,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.List;
+
 import lombok.NonNull;
 import me.googas.jsongo.exception.TestSetupException;
+import me.googas.jsongo.models.Note;
 import me.googas.jsongo.models.User;
 import me.googas.jsongo.subloader.NoteSubloader;
 import me.googas.jsongo.subloader.UserSubloader;
@@ -37,7 +40,6 @@ public class BaseTest {
         Jsongo.join(settings.getUri(), settings.getDatabase())
             .timeout(300)
             .setGson(baseBuilder)
-            .setSsl(true)
             .add(NoteSubloader::new, UserSubloader::new)
             .build();
   }
@@ -57,6 +59,28 @@ public class BaseTest {
     String username = "Googas";
     User user = subloader.getByUsername(username).orElseThrow(NullPointerException::new);
     System.out.println("User has been found: " + user);
+  }
+
+  @Test
+  @Order(2)
+  public void saveNotes() {
+    NoteSubloader subloader = BaseTest.jsongo.getSubloader(NoteSubloader.class);
+    UserSubloader userSubloader = BaseTest.jsongo.getSubloader(UserSubloader.class);
+    String username = "Googas";
+    User user = userSubloader.getByUsername(username).orElseThrow(NullPointerException::new);
+    for (int i = 0; i < 10; i++) {
+        subloader.create(user, "Note " + i);
+    }
+  }
+
+  @Test
+  @Order(3)
+  public void queryNotes() {
+    NoteSubloader subloader = BaseTest.jsongo.getSubloader(NoteSubloader.class);
+    UserSubloader userSubloader = BaseTest.jsongo.getSubloader(UserSubloader.class);
+    String username = "Googas";
+    User user = userSubloader.getByUsername(username).orElseThrow(NullPointerException::new);
+    List<Note> notes = subloader.getNotes(user);
   }
 
   @NonNull

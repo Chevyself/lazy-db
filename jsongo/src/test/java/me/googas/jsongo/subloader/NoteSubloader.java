@@ -17,7 +17,7 @@ public class NoteSubloader extends JsongoSubloader<Note> {
 
   @NonNull
   public Note create(@NonNull User user, @NonNull String value) {
-    int id = Randomizer.nextInt();
+    long id = Randomizer.nextLong();
     Note note = new Note(id, user.getId(), value);
     this.save(Query.of("{_id:#}", id), note);
     return note;

@@ -78,7 +78,10 @@ public class Query implements SuppliedBuilder<Gson, Document> {
       int index = 0;
       while (matcher.find() && index < objects.length) {
         String group = matcher.group();
-        this.built = this.built.replaceFirst(group, gson.toJson(objects[index]));
+        String json = gson.toJson(objects[index]);
+        // Escape special characters
+        json = Matcher.quoteReplacement(json);
+        this.built = this.built.replaceFirst(group, json);
         index++;
       }
     }

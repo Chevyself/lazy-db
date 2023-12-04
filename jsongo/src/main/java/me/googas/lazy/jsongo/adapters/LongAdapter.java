@@ -14,7 +14,7 @@ public class LongAdapter implements JsonDeserializer<Long>, JsonSerializer<Long>
   @Override
   public JsonElement serialize(Long src, Type typeOfSrc, JsonSerializationContext context) {
     JsonObject object = new JsonObject();
-    object.addProperty("$numberLong", src);
+    object.addProperty("$numberLong", src.toString());
     return object;
   }
 

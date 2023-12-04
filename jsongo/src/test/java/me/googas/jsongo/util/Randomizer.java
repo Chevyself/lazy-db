@@ -22,4 +22,8 @@ public class Randomizer {
   public static int nextInt() {
     return Randomizer.random.nextInt();
   }
+
+  public static long nextLong() {
+    return Randomizer.random.nextLong();
+  }
 }
